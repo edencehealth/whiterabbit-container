@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 env:
-  DOCKERHUB_IMAGE: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/whiterabbit-docker
+  DOCKERHUB_IMAGE: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/whiterabbit-container
 
 jobs:
   build-and-push:

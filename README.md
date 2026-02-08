@@ -12,7 +12,7 @@ A Dockerized build of OHDSI **WhiteRabbit** with:
 ### 1) Pull the image from Docker Hub
 
 ```bash
-docker pull edence/ohdsi-whiterabbit-docker:main
+docker pull edence/whiterabbit-container:main
 ```
 
 ### 2) Run WhiteRabbit in CLI mode (default)
@@ -20,7 +20,7 @@ docker pull edence/ohdsi-whiterabbit-docker:main
 Pass any WhiteRabbit CLI arguments directly to the container:
 
 ```bash
-docker run --rm edence/ohdsi-whiterabbit-docker:main --help
+docker run --rm edence/whiterabbit-container:main --help
 ```
 
 Example:
@@ -28,7 +28,7 @@ Example:
 ```bash
 docker run --rm \
   -v /path/on/host:/data \
-  edence/ohdsi-whiterabbit-docker:main \
+  edence/whiterabbit-container:main \
   --input /data/your-file.csv --output /data/scan-report
 ```
 
@@ -47,7 +47,7 @@ GUI mode runs WhiteRabbit in a headless X server with optional VNC.
 docker run --rm -p 5900:5900 \
   -e ENABLE_VNC=1 \
   -e VNC_PASSWORD=ohdsi \
-  edence/ohdsi-whiterabbit-docker:main gui
+  edence/whiterabbit-container:main gui
 ```
 
 Then connect using any VNC client:
@@ -66,7 +66,7 @@ Mount a host folder into the container (recommended at `/data`):
 ```bash
 docker run --rm \
   -v /your/local/folder:/data \
-  edence/ohdsi-whiterabbit-docker:main \
+  edence/whiterabbit-container:main \
   --input /data/input.csv --output /data/output
 ```
 
@@ -79,7 +79,7 @@ If you need more memory or JVM tuning:
 ```bash
 docker run --rm \
   -e WR_JAVA_OPTS="-Xmx4g" \
-  edence/ohdsi-whiterabbit-docker:main --help
+  edence/whiterabbit-container:main --help
 ```
 
 ---
