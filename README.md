@@ -1,6 +1,6 @@
 # OHDSI WhiteRabbit Docker
 
-A Dockerized build of OHDSI **WhiteRabbit** with:
+A Dockerized build of [OHDSI **WhiteRabbit**](https://github.com/OHDSI/WhiteRabbit) with:
 
 - **CLI mode** (default)
 - **GUI mode** (optional via Xvfb + VNC)
@@ -33,7 +33,7 @@ docker run --rm \
 ```
 
 **Note:** WhiteRabbit’s CLI options are defined by the tool itself.  
-Use `--help` or refer to OHDSI documentation for the exact parameters.
+Use `--help` or refer to [OHDSI documentation](https://ohdsi.github.io/WhiteRabbit/WhiteRabbit.html#running-from-the-command-line) for the exact parameters.
 
 ---
 
