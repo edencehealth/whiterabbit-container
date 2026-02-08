@@ -7,7 +7,6 @@ FROM maven:3.9.9-eclipse-temurin-17 AS build
 
 ARG WR_REPO=https://github.com/OHDSI/WhiteRabbit.git
 ARG WR_REF=master
-# Build & install reactor so internal modules (e.g., rabbit-core) are in local repo
 ARG WR_MVN_ARGS="-DskipTests install"
 
 RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && \
@@ -25,6 +24,9 @@ RUN cd /src/WhiteRabbit && \
       dependency:copy-dependencies \
       -DincludeScope=runtime \
       -DoutputDirectory=/out/lib
+
+# Remove extra SLF4J provider (keep log4j-slf4j2-impl)
+RUN rm -f /out/lib/slf4j-simple-*.jar
 
 # Collect jar (prefer whiterabbit module jar)
 RUN mkdir -p /out && \
