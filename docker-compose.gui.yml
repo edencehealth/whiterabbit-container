@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  ohdsi-wr:
+    build:
+      context: .
+    environment:
+      ENABLE_VNC: "1"
+      VNC_PASSWORD: "ohdsi"
+    ports:
+      - "5900:5900"
+    command: ["gui"]
