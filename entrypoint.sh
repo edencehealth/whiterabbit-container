@@ -1,51 +1,38 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-APP_HOME="/opt/ohdsi"
-WR_JAR="${APP_HOME}/WhiteRabbit.jar"
+APP_HOME=/opt/ohdsi
+JAR_PATH="${APP_HOME}/WhiteRabbit.jar"
+LIB_DIR="${APP_HOME}/lib"
+MAIN_CLASS="org.ohdsi.whiterabbit.WhiteRabbitMain"
+JAVA_OPTS="${WR_JAVA_OPTS:-}"
 
-: "${WR_JAVA_OPTS:=}"
-: "${DISPLAY:=:99}"
-: "${XVFB_SCREEN:=1280x800x24}"
-: "${ENABLE_VNC:=0}"
-: "${VNC_PASSWORD:=}"
+if [ ! -f "${JAR_PATH}" ]; then
+  echo "ERROR: JAR not found at ${JAR_PATH}" >&2
+  exit 1
+fi
 
-start_xvfb() {
-  if ! pgrep -x Xvfb >/dev/null 2>&1; then
-    Xvfb "${DISPLAY}" -screen 0 "${XVFB_SCREEN}" >/tmp/xvfb.log 2>&1 &
-  fi
-  export DISPLAY="${DISPLAY}"
-}
+CLASSPATH="${JAR_PATH}:${LIB_DIR}/*"
 
-start_vnc() {
-  if [[ "${ENABLE_VNC}" == "1" ]]; then
-    if [[ -n "${VNC_PASSWORD}" ]]; then
-      x11vnc -display "${DISPLAY}" -rfbport 5900 -passwd "${VNC_PASSWORD}" -forever -shared -bg
+if [ "${1:-}" = "gui" ]; then
+  shift
+  export DISPLAY=${DISPLAY:-:1}
+
+  if [ "${ENABLE_VNC:-0}" = "1" ]; then
+    Xvfb "${DISPLAY}" -screen 0 1280x800x24 &
+    fluxbox &
+    if [ -n "${VNC_PASSWORD:-}" ]; then
+      x11vnc -storepasswd "${VNC_PASSWORD}" /tmp/vncpass
+      x11vnc -display "${DISPLAY}" -forever -shared -rfbauth /tmp/vncpass &
     else
-      x11vnc -display "${DISPLAY}" -rfbport 5900 -nopw -forever -shared -bg
+      x11vnc -display "${DISPLAY}" -forever -shared &
     fi
+  else
+    Xvfb "${DISPLAY}" -screen 0 1280x800x24 &
+    fluxbox &
   fi
-}
 
-run_wr_cli() {
-  exec java ${WR_JAVA_OPTS} -jar "${WR_JAR}" "$@"
-}
-
-run_wr_gui() {
-  start_xvfb
-  fluxbox >/tmp/fluxbox.log 2>&1 &
-  start_vnc
-  exec java ${WR_JAVA_OPTS} -jar "${WR_JAR}"
-}
-
-cmd="${1:-}"
-case "${cmd}" in
-  gui)
-    shift
-    run_wr_gui
-    ;;
-  *)
-    # Default: WhiteRabbit CLI with passthrough args
-    run_wr_cli "$@"
-    ;;
-esac
+  exec java ${JAVA_OPTS} -cp "${CLASSPATH}" "${MAIN_CLASS}" "$@"
+else
+  exec java ${JAVA_OPTS} -cp "${CLASSPATH}" "${MAIN_CLASS}" "$@"
+fi
