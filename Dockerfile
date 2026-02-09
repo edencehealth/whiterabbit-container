@@ -50,9 +50,13 @@ ENV LANG=C.UTF-8 \
     LC_ALL=C.UTF-8 \
     APP_HOME=/opt/ohdsi
 
-# Optional GUI dependencies
+# Optional GUI dependencies (keep Fluxbox, add X11 utils)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      xvfb x11vnc fluxbox \
+      xvfb \
+      x11vnc \
+      fluxbox \
+      x11-utils \
+      x11-xkb-utils \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR ${APP_HOME}
